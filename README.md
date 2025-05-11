@@ -25,4 +25,4 @@ The following commands will then be available from the repository root:
 
 ## License
 
-`chartjs-plugin-piechart-outlabels-aars` is available under the [MIT license](LICENSE.md).
+`chartjs-plugin-piechart-outlabels-aars` is available under the [MIT license](https://github.com/aaronicsubstances/chartjs-plugin-piechart-outlabels/blob/master/LICENSE.md).
