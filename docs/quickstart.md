@@ -2,7 +2,7 @@
 
 ## First Steps
 
-Include Chart.js library and piechart-outlabels plugin to HTML page.
+Include Chart.js library and chartjs-plugin-piechart-outlabels-aars plugin to HTML page.
 
 ```html
 <head>
@@ -10,19 +10,17 @@ Include Chart.js library and piechart-outlabels plugin to HTML page.
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script 
-		src="https://rawgit.com/chartjs/chartjs.github.io/master/dist/master/Chart.min.js"
+		src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"
 	></script>
 	<script
-		src="https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels"
+		src="https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars"
 	></script>
 
 	<title>Pie Chart Outlabels</title>
 </head>
 ```
 
-To make the chart look more fancy, the plugin also provides special chart type called `outlabeledPie`. Insert canvas element to HTML page.
-
-> It is highly recommended to use `outlabeledPie` Chart type!
+The plugin provides the special chart types called `outlabeledPie` and `outlabeledDoughnut`. Insert canvas element to HTML page.
 
 ```html
 <div id="chart-wrapper">
@@ -34,7 +32,7 @@ Initialize chart.
 
 ```html
 <script id="script-construct">
-	var chart = new Chart('outlabeledChart', {
+	var chart = new Chart(document.getElementById('outlabeledChart'), {
 		type: 'outlabeledPie',
 		data: {
 			labels: [
@@ -66,7 +64,7 @@ Initialize chart.
 			}]
 		},
 		options: {
-			zoomOutPercentage: 55, // makes chart 40% smaller (50% by default, if the preoprty is undefined)
+			radius: 40, // makes chart 40% smaller (100% by default, so this preoprty has to defined in order to see the labels not clipped off)
 			plugins: {
 				legend: false,
 				outlabels: {
@@ -94,10 +92,10 @@ Initialize chart.
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<script 
-			src="https://rawgit.com/chartjs/chartjs.github.io/master/dist/master/Chart.min.js"
+			src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"
 		></script>
 		<script
-			src="https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels"
+			src="https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars"
 		></script>
 
 		<title>Pie Chart Outlabels</title>
@@ -107,7 +105,7 @@ Initialize chart.
 			<canvas id="outlabeledChart"></canvas>
 		</div>
 		<script id="script-construct">
-			var chart = new Chart('outlabeledChart', {
+			var chart = new Chart(document.getElementById('outlabeledChart'), {
 				type: 'outlabeledPie',
 				data: {
 					labels: [
@@ -139,7 +137,7 @@ Initialize chart.
 					}]
 				},
 				options: {
-					zoomOutPercentage: 55, // makes chart 55% smaller (50% by default, if the preoprty is undefined)
+					radius: 40, // makes chart 40% smaller (100% by default, so this preoprty has to defined in order to see the labels not clipped off)
 					plugins: {
 						legend: false,
 						outlabels: {

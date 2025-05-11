@@ -1,6 +1,6 @@
 # Formatting and Styling
 
-##Text
+## Text
 
 Label's content can be controlled by changing the text option's value. Labels can be displayed on multiple lines by using the newline character (`\n`) between each line.
 

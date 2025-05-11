@@ -1,24 +1,70 @@
-const pkg = require('./package.json');
+import fs from 'fs';
+
+import resolve from '@rollup/plugin-node-resolve'
+import typescript from '@rollup/plugin-typescript';
+import terser from '@rollup/plugin-terser';
+
+const pkg = JSON.parse(fs.readFileSync('./package.json'));
 
 const banner = `/*!
- * ` + pkg.name + `
- * http://chartjs.org/
- * Version: ` + pkg.version + `
- *
- * Copyright ` + (new Date().getFullYear()) + ` Neckster
- * Released under the MIT license
- * https://github.com/Neckster/` + pkg.name + `/blob/master/LICENSE
- */`;
+ * ${pkg.name} v${pkg.version}
+ * ${pkg.author.url}
+ * (c) ${new Date().getFullYear()} ${pkg.author.name}
+ * @license ${pkg.license}
+ */`
 
-export default {
-	input: 'src/plugin.js',
-	file: 'dist/' + pkg.name + '.js',
-	banner: banner,
-	format: 'umd',
-	external: [
-		'chart.js'
-	],
-	globals: {
-		'chart.js': 'Chart'
+export default [
+	{
+		input: './src/index.esm.ts',
+		external: [
+			'chart.js',
+			'chart.js/helpers'
+		],
+		plugins: [
+			resolve(), typescript()
+		],
+		output: {
+			sourcemap: true,
+			banner: banner,
+			globals: {
+				'chart.js': 'Chart',
+				'chart.js/helpers': 'Chart.helpers'
+			},
+			file: pkg.module,
+			format: 'esm'
+		}
+	},
+	{
+		input: './src/index.umd.ts',
+		external: [
+			'chart.js',
+			'chart.js/helpers'
+		],
+		plugins: [
+			resolve(), typescript()
+		],
+		output: [
+			{
+				sourcemap: true,
+				banner: banner,
+				globals: {
+					'chart.js': 'Chart',
+					'chart.js/helpers': 'Chart.helpers'
+				},
+				file: pkg.umd,
+				format: 'umd'
+			},
+			{
+				sourcemap: true,
+				banner: banner,
+				globals: {
+					'chart.js': 'Chart',
+					'chart.js/helpers': 'Chart.helpers'
+				},
+				file: pkg.unpkg,
+				format: 'umd',
+				plugins: [terser()]
+			}
+		]
 	}
-};
+]

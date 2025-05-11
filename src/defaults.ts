@@ -4,7 +4,9 @@
 
 'use strict';
 
-export default {
+import { OutLabelsContext, OutLabelsOptions } from "./types";
+
+const defaults: OutLabelsOptions & { "LABEL_KEY": string } = {
 
 	LABEL_KEY: '$outlabels',
 
@@ -13,8 +15,8 @@ export default {
 	 * @member {String|Array|Function|null}
 	 * @default null (adaptive background)
 	 */
-	backgroundColor: function(context) {
-		return context.dataset.backgroundColor;
+	backgroundColor: function(context: OutLabelsContext) {
+		return context.dataset.backgroundColor as string | undefined;
 	},
 
 	/**
@@ -22,8 +24,8 @@ export default {
 	 * @member {String|Array|Function|null}
 	 * @default null (adaptive border color)
 	 */
-	borderColor: function(context) {
-		return context.dataset.backgroundColor;
+	borderColor: function(context: OutLabelsContext) {
+		return context.dataset.backgroundColor as string | undefined;
 	},
 
 	/**
@@ -31,8 +33,8 @@ export default {
 	 * @member {String|Array|Function|null}
 	 * @default null (adaptive line color)
 	 */
-	lineColor: function(context) {
-		return context.dataset.backgroundColor;
+	lineColor: function(context: OutLabelsContext) {
+		return context.dataset.backgroundColor as string | undefined;
 	},
 
 	/**
@@ -73,14 +75,14 @@ export default {
 	/**
 	 * The font options used to draw the label text.
 	 * @member {Object|Array|Function}
-	 * @prop {Boolean} font.family - defaults to Chart.defaults.global.defaultFontFamily
-	 * @prop {Boolean} font.size - defaults to Chart.defaults.global.defaultFontSize
-	 * @prop {Boolean} font.style - defaults to Chart.defaults.global.defaultFontStyle
+	 * @prop {Boolean} font.family - defaults to Chart.defaults.font.family
+	 * @prop {Boolean} font.size - defaults to Chart.defaults.font.size
+	 * @prop {Boolean} font.style - defaults to Chart.defaults.font.style
 	 * @prop {Boolean} font.weight - defaults to 'normal'
 	 * @prop {Boolean} font.maxSize - defaults to undefined (unlimited)
 	 * @prop {Boolean} font.minSize - defaults to undefined (unlimited)
 	 * @prop {Boolean} font.resizable - defaults to true
-	 * @default Chart.defaults.global.defaultFont.*
+	 * @default Chart.defaults.font.*
 	 */
 	font: {
 		family: undefined,
@@ -90,14 +92,8 @@ export default {
 		maxSize: null,
 		minSize: null,
 		resizable: true,
+        lineHeight: 1.2
 	},
-
-	/**
-	 * The line height (in pixel) to use for multi-lines labels.
-	 * @member {Number|Array|Function|undefined}
-	 * @default 1.2
-	 */
-	lineHeight: 1.2,
 
 
 	/**
@@ -138,13 +134,6 @@ export default {
 	text: '%l %p',
 
 	/**
-	 * The level of zoom (out) for pie/doughnut chart in percent.
-	 * @member {Number}
-	 * @default 50 (%)
-	 */
-	zoomOutPercentage: 50,
-
-	/**
 	 * The count of numbers after the point separator for float values of percent property
 	 * @member {Number}
 	 * @default 1
@@ -158,3 +147,5 @@ export default {
 	 */
 	valuePrecision: 3
 };
+
+export default defaults;

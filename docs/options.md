@@ -2,7 +2,7 @@
 
 The plugin options can be changed at 3 different levels:
 
-- globally: `Chart.defaults.global.plugins.outlabels.*`
+- globally: `Chart.defaults.plugins.outlabels.*`
 - per chart: `options.plugins.outlabels.*`
 - per dataset: `dataset.outlabels.*`
 
@@ -21,7 +21,7 @@ Available options:
 | `lineWidth` | `Number` | Yes | Yes | `2`
 | `stretch` | `Number` | Yes | Yes | `40`
 | `color` | [`Style`](#style-options) | Yes | Yes | `white`
-| [`display`](positioning.md#visibility) | `Boolean` | Yes | Yes | `true`
+| `display` | `Boolean` | Yes | Yes | `true`
 | `font` | `Object` | Yes | Yes | -
 | `font.resizable` | `Boolean` | - | - | `true`
 | `font.minSize` | `Number` | - | - | `null`
@@ -43,6 +43,14 @@ Available options:
 Scriptable options also accept a function which is called for each data and that takes the unique argument `context` representing contextual information (see [option context](options.md#option-context)).
 
 Example:
+
+```javascript
+display: function(context) {
+    var index = context.dataIndex;
+    var value = context.dataset.data[index];
+    return value > 0;  // don't label zero values
+}
+```
 
 ```javascript
 lineColor: function(context) {
