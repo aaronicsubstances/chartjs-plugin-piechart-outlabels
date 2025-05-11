@@ -20,7 +20,7 @@ Include Chart.js library and chartjs-plugin-piechart-outlabels-aars plugin to HT
 </head>
 ```
 
-The plugin provides the special chart types called `outlabeledPie` and `outlabeledDoughnut`. Insert canvas element to HTML page.
+The plugin works with the chart types called `pie` and `doughnut`. Insert canvas element to HTML page.
 
 ```html
 <div id="chart-wrapper">
@@ -33,7 +33,7 @@ Initialize chart.
 ```html
 <script id="script-construct">
 	var chart = new Chart(document.getElementById('outlabeledChart'), {
-		type: 'outlabeledPie',
+		type: 'pie',
 		data: {
 			labels: [
 				'ONE',
@@ -106,7 +106,7 @@ Initialize chart.
 		</div>
 		<script id="script-construct">
 			var chart = new Chart(document.getElementById('outlabeledChart'), {
-				type: 'outlabeledPie',
+				type: 'pie',
 				data: {
 					labels: [
 						'ONE',
