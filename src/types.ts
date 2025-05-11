@@ -63,7 +63,7 @@ export type OutLabelsOptions = {
     borderRadius?: number;
     borderWidth?: number;
     lineWidth?: number;
-    stretch?: number;
+    stickLength?: number;
     percentPrecision?: number;
     valuePrecision?: number;
 

@@ -54,7 +54,7 @@ outlabels: {
 	display: true,
 	lineWidth: 10, // Thickness of line between chart arc and Label
 	padding: 17,
-	stretch: 100, // The length between chart arc and Label
+	stickLength: 100, // The length between chart arc and Label
 	text: "%l (%p)"
 	textAlign: "center"
 }

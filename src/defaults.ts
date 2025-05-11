@@ -124,7 +124,7 @@ const defaults: OutLabelsOptions & { "LABEL_KEY": string } = {
 	 * @member {Number|Array|Function|undefined}
 	 * @default 40
 	 */
-	stretch: 40,
+	stickLength: 40,
 
 	/**
 	 * The text of the label.

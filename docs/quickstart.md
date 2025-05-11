@@ -70,7 +70,7 @@ Initialize chart.
 				outlabels: {
 					text: '%l %p',
 					color: 'white',
-					stretch: 45,
+					stickLength: 45,
 					font: {
 						resizable: true,
 						minSize: 12,
@@ -143,7 +143,7 @@ Initialize chart.
 						outlabels: {
 							text: '%l %p',
 							color: 'white',
-							stretch: 45,
+							stickLength: 45,
 							font: {
 								resizable: true,
 								minSize: 12,

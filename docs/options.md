@@ -19,7 +19,7 @@ Available options:
 | `borderWidth` | `Number` | Yes | Yes | `2`
 | `lineColor` | `String` | Yes | Yes | `Same as pie arc color (adaptive)`
 | `lineWidth` | `Number` | Yes | Yes | `2`
-| `stretch` | `Number` | Yes | Yes | `40`
+| `stickLength` | `Number` | Yes | Yes | `40`
 | `color` | [`Style`](#style-options) | Yes | Yes | `white`
 | `display` | `Boolean` | Yes | Yes | `true`
 | `font` | `Object` | Yes | Yes | -

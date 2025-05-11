@@ -24,7 +24,7 @@ export default class OutLabel {
     label: string
     value: number
     style: ResolvedOutLabelsOptions
-    stretch: number
+    stickLength: number
     size: Size
     offset: Point;
     textRect: Rect = { x: 0, y: 0, width: 0, height: 0 };
@@ -127,7 +127,7 @@ export default class OutLabel {
         style.textAlign = resolve([config.textAlign, 'left'], context, index) as CanvasTextAlign;
         this.style = style;
 
-        this.stretch = resolve([config.stretch, 40], context, index) as number;
+        this.stickLength = resolve([config.stickLength, 40], context, index) as number;
 
         this.size = textSize(ctx, this.lines, this.style.font);
 
@@ -216,7 +216,7 @@ export default class OutLabel {
     }
 
     update(arc: ArcElement, elements: ArcElement[], max: number) {
-        this.center = positioners.center(arc, this.stretch);
+        this.center = positioners.center(arc, this.stickLength);
 
         this.center.x += this.offset.x;
         this.center.y += this.offset.y;
