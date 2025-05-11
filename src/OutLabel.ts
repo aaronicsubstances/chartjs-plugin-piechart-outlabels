@@ -131,7 +131,6 @@ export default class OutLabel {
 
         this.size = textSize(ctx, this.lines, this.style.font);
 
-
         this.offset = {
             x: 0,
             y: 0
@@ -142,17 +141,23 @@ export default class OutLabel {
             'endAngle',
         ], true);
 
-        // Chart.js considers clockwise rotation as positive angles;
-        // so negate bisecting angle to get it into high school math direction.
-        // And then scale angle to between 0 and 2.
-        // So 0 for East, 0.5 for North, 1 for West and 1.5 for South.
-        const angle = -((startAngle + endAngle) / 2) / (Math.PI);
+        // Chart.js considers clockwise rotation as positive angles
+        // between -pi/2 (ie -90) and 3*pi/2 (ie 270), and 0 is for East.
+        // So after scaling angle by pi (180), the result will be between -0.5 and 1.5
+        // So -0.5 for North, 0 for East, 0.5 for South, 1 for West, and 1.25 for North-West.
+        const angle = (startAngle + endAngle) / 2 / (Math.PI);
 
         if (angle >= -0.45 && angle <= 0.45) {
             this.offset.x = this.size.width / 2;
         }
-        else if (angle >= -1.45 && angle <= -0.55) {
+        else if (angle >= 0.55 && angle <= 1.45) {
             this.offset.x = -this.size.width / 2;
+        }
+        else if (angle > 0.45 && angle < 0.55) {
+            this.offset.y = this.size.height / 2;
+        }
+        else {
+            this.offset.y = -this.size.height / 2;
         }
     }
 
