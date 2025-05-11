@@ -60,7 +60,7 @@ export function moveFromAnchor(center: Center, dist: number): Center {
     };
 }
 
-export function doesRectIntersectEnclosingRectOfCircle(arc: ArcElement, r: Rect) {
+export function doesRectIntersectCircle(arc: ArcElement, r: Rect) {
     const { x: circleCenterX, y: circleCenterY, outerRadius: circleRadius } = arc.getProps([
         "x",
         "y",
@@ -74,6 +74,9 @@ export function doesRectIntersectEnclosingRectOfCircle(arc: ArcElement, r: Rect)
         x: r.x + r.width,
         y: r.y + r.height
     };
+
+    // first check for intersection with square for which
+    // circle will be an inscribed circle.
     const l2: Point = {
         x: circleCenterX - circleRadius,
         y: circleCenterY - circleRadius
@@ -83,13 +86,80 @@ export function doesRectIntersectEnclosingRectOfCircle(arc: ArcElement, r: Rect)
         y: circleCenterY + circleRadius
     };
 
+    if (!doRectanglesIntersect(l1, r1, l2, r2)) {
+        return false;
+    }
+
+    // next check for intersection with square for which
+    // circle will be a circumscribed circle.
+    const halfOfSmallerSquareSide = circleRadius / Math.SQRT2;
+    const l3: Point = {
+        x: circleCenterX - halfOfSmallerSquareSide,
+        y: circleCenterY - halfOfSmallerSquareSide
+    };
+    const r3: Point = {
+        x: circleCenterX + halfOfSmallerSquareSide,
+        y: circleCenterY + halfOfSmallerSquareSide
+    };
+
+    if (doRectanglesIntersect(l1, r1, l3, r3)) {
+        return true;
+    }
+
+    // lastly check for any two sides of rectangle
+    // which do not intersect circle.
+
+    const circleCenter = {
+        x: circleCenterX,
+        y: circleCenterY
+    };
+
+    // use the horizontal sides.
+    let ptsOfIntercept1 = calcIntersectionOfHorizontalLineWithCircle(r.y, circleCenter, circleRadius);
+    let ptsOfIntercept2 = calcIntersectionOfHorizontalLineWithCircle(r.y + r.height, circleCenter, circleRadius);
+    return doRangesOverlap([r.x, r.x + r.width], ptsOfIntercept1) ||
+            doRangesOverlap([r.x, r.x + r.width], ptsOfIntercept2);
+}
+
+function doRectanglesIntersect(topLeft1: Point, bottomRight1: Point,
+        topLeft2: Point, bottomRight2: Point) {
     // If one rectangle is to the left or right of the other
-    if (r1.x < l2.x || l1.x > r2.x)
+    if (bottomRight1.x < topLeft2.x || topLeft1.x > bottomRight2.x)
         return false;
 
     // If one rectangle is above or below the other
-    if (r1.y < l2.y || l1.y > r2.y)
+    if (bottomRight1.y < topLeft2.y || topLeft1.y > bottomRight2.y)
         return false;
 
     return true;
+}
+
+function calcIntersectionOfHorizontalLineWithCircle(yIntercept: number,
+        circleCenter: { x: number, y: number }, circleRadius: number) {
+    let determinant = circleRadius*circleRadius -  yIntercept*yIntercept;
+    determinant += 2 * yIntercept * circleCenter.y - circleCenter.y * circleCenter.y;
+    if (determinant < 0) {
+        return undefined;
+    }
+    const sqrtOfDeterminant = Math.sqrt(determinant);
+    return [circleCenter.x - sqrtOfDeterminant, circleCenter.x + sqrtOfDeterminant];
+}
+
+/*function calcIntersectionOfVerticalLineWithCircle(xIntercept: number,
+        circleCenter: { x: number, y: number }, circleRadius: number) {
+    let determinant = circleRadius*circleRadius -  xIntercept*xIntercept;
+    determinant += 2 * xIntercept * circleCenter.x - circleCenter.x * circleCenter.x;
+    if (determinant < 0) {
+        return undefined;
+    }
+    const sqrtOfDeterminant = Math.sqrt(determinant);
+    return [circleCenter.y - sqrtOfDeterminant, circleCenter.y + sqrtOfDeterminant];
+}*/
+
+function doRangesOverlap(r1: number[], r2?: number[]) {
+    if (!r2) {
+        return false;
+    }
+    let noOverlap = r1[1] < r2[0] || r1[0] > r2[1];
+    return !noOverlap;
 }

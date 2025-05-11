@@ -228,7 +228,7 @@ export default class OutLabel {
             this.labelRect = this.computeLabelRect();
             const rectPoints = this.getPoints();
 
-            valid = !positioners.doesRectIntersectEnclosingRectOfCircle(arc, this.labelRect);
+            valid = !positioners.doesRectIntersectCircle(arc, this.labelRect);
 
             for (let e = 0; valid && e < max; e++) {
                 const element = elements[e][LABEL_KEY] as OutLabel | undefined;
