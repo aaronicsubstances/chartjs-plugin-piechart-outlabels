@@ -1,8 +1,4 @@
-<div align="center">
-    <img src="docs/assets/banner.png"/>
-</div>
-
-## Publishing of Artifacts to NPM, Github release section and CDN sites is pending but source code is complete
+# chartjs-plugin-piechart-outlabels-aars
 
 Highly customizable [Chart.js](http://www.chartjs.org/) plugin that displays labels outside the pie/doughnut chart.
 
@@ -12,11 +8,10 @@ Requires [Chart.js](https://github.com/chartjs/Chart.js/releases) **3.0.0** or l
 
 ## Documentation
 
-- [Installation](https://piechart-outlabels.netlify.com/installation)
-- [Quick Start](https://piechart-outlabels.netlify.com/quickstart)
-- [Options](https://piechart-outlabels.netlify.com/options)
-- [Formating & Styling](https://piechart-outlabels.netlify.com/formatting)
-- [Sample](https://piechart-outlabels.netlify.com/sample)
+- [Installation](https://github.com/aaronicsubstances/chartjs-plugin-piechart-outlabels/blob/master/docs/installation.md)
+- [Quick Start](https://github.com/aaronicsubstances/chartjs-plugin-piechart-outlabels/blob/master/docs/quickstart.md)
+- [Options](https://github.com/aaronicsubstances/chartjs-plugin-piechart-outlabels/blob/master/docs/options.md)
+- [Formating & Styling](https://github.com/aaronicsubstances/chartjs-plugin-piechart-outlabels/blob/master/docs/formatting.md)
 
 ## Development
 
