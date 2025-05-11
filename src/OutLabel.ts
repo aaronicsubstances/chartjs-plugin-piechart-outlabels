@@ -1,5 +1,5 @@
 import { ArcElement, CanvasFontSpec, ChartArea, Point, Scriptable, TRBL } from "chart.js";
-import { addRoundedRectPath, resolve, toPadding } from "chart.js/helpers";
+import { resolve, toPadding } from "chart.js/helpers";
 
 import defaults from "./defaults";
 import {
@@ -11,7 +11,7 @@ import {
     ResolvedOutLabelsOptions,
     Size
 } from "./types";
-import { parseFont, textSize } from "./helpers";
+import { drawRoundedRect, parseFont, textSize } from "./helpers";
 import * as positioners from "./positioners";
 
 const LABEL_KEY = defaults.LABEL_KEY;
@@ -302,19 +302,13 @@ export default class OutLabel {
     // Draw label box
     drawLabel() {
         this.ctx.beginPath();
-        addRoundedRectPath(
-            this.ctx, {
-                x: Math.round(this.labelRect.x),
-                y: Math.round(this.labelRect.y),
-                w: Math.round(this.labelRect.width),
-                h: Math.round(this.labelRect.height),
-                radius: {
-                    topLeft: this.style.borderRadius,
-                    bottomLeft: this.style.borderRadius,
-                    topRight: this.style.borderRadius,
-                    bottomRight: this.style.borderRadius,
-                }
-            }
+        drawRoundedRect(
+            this.ctx,
+            Math.round(this.labelRect.x),
+            Math.round(this.labelRect.y),
+            Math.round(this.labelRect.width),
+            Math.round(this.labelRect.height),
+            this.style.borderRadius
         );
         this.ctx.closePath();
 

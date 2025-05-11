@@ -26,7 +26,7 @@ You first need to install node dependencies (requires [Node.js](https://nodejs.o
 
 The following commands will then be available from the repository root:
 
-    > npm run build            // build dist files
+    > npm run build            // build dist files, then can view index*.html files in sample folder.
 
 ## License
 
