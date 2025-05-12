@@ -12,11 +12,16 @@
     "type": "git",
     "url": "git+https://github.com/aaronicsubstances/chartjs-plugin-piechart-outlabels.git"
   },
+  "files": [
+    "sample/**",
+    "dist/**",
+    "docs/**"
+  ],
   "type": "module",
   "main": "dist/chartjs-plugin-piechart-outlabels-aars.js",
   "module": "dist/chartjs-plugin-piechart-outlabels-aars.js",
   "umd": "dist/chartjs-plugin-piechart-outlabels-aars.umd.js",
-  "jsdelivr": "dist/chartjs-plugin-piechart-outlabels-aars.umd.js",
+  "jsdelivr": "dist/chartjs-plugin-piechart-outlabels-aars.umd.min.js",
   "unpkg": "dist/chartjs-plugin-piechart-outlabels-aars.umd.min.js",
   "types": "dist/index.d.ts",
   "exports": {
