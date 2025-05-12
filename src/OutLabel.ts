@@ -44,10 +44,6 @@ export default class OutLabel {
             ctx: CanvasRenderingContext2D,
             config: OutLabelsOptions,
             context: OutLabelsContext) {
-        // Check whether the label should be displayed
-		if (!resolve([config.display, true], context, index)) {
-			throw new Error('Label display property is set to false.');
-		}
 		// Init text
 		const value = context.dataset.data[index];
 		const label = context.labels[index];
@@ -77,7 +73,7 @@ export default class OutLabel {
 				return config.percentPrecision || defaults.percentPrecision;
 			}
 		}).forEach(function(val) {
-			text = text.replace(/%p\.?(\d*)/i, (context.percent * 100).toFixed(val) + '%');
+			text = text.replace(/%p\.?(\d*)/i, context.percent.toFixed(val) + '%');
 		});
 
 		// Count lines
@@ -128,6 +124,9 @@ export default class OutLabel {
         this.style = style;
 
         this.stickLength = resolve([config.stickLength, 40], context, index) as number;
+		if (this.stickLength < 0) {
+			throw new Error('Negative stick length.');
+		}
 
         this.size = textSize(ctx, this.lines, this.style.font);
 
@@ -140,6 +139,9 @@ export default class OutLabel {
             'startAngle',
             'endAngle',
         ], true);
+        if (!Number.isFinite(startAngle) || !Number.isFinite(endAngle)) {
+            throw new Error("invalid arc props");
+        }
 
         // Chart.js considers clockwise rotation as positive angles
         // between -pi/2 (ie -90) and 3*pi/2 (ie 270), and 0 is for East.
@@ -265,6 +267,52 @@ export default class OutLabel {
     }
     
     /* ======================= DRAWING ======================= */
+    
+    drawLine() {
+        this.ctx.save();
+
+        this.ctx.strokeStyle = this.style.lineColor;
+        this.ctx.lineWidth = this.style.lineWidth;
+        this.ctx.lineJoin = 'miter';
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.center.anchor.x, this.center.anchor.y);
+        this.ctx.lineTo(this.center.copy.x, this.center.copy.y);
+        this.ctx.stroke();
+
+        this.ctx.restore();
+    }
+
+    draw() {
+        this.drawLabel();
+        this.drawText();
+    }
+    
+    // Draw label box
+    drawLabel() {
+        this.ctx.beginPath();
+        drawRoundedRect(
+            this.ctx,
+            Math.round(this.labelRect.x),
+            Math.round(this.labelRect.y),
+            Math.round(this.labelRect.width),
+            Math.round(this.labelRect.height),
+            this.style.borderRadius
+        );
+        this.ctx.closePath();
+
+        if (this.style.backgroundColor) {
+            this.ctx.fillStyle = this.style.backgroundColor || 'black';
+            this.ctx.fill();
+        }
+
+        if (this.style.borderColor && this.style.borderWidth) {
+            this.ctx.strokeStyle = this.style.borderColor;
+            this.ctx.lineWidth = this.style.borderWidth;
+            this.ctx.lineJoin = 'miter';
+            this.ctx.stroke();
+        }
+    }
+    
     // Draw label text
     drawText() {
         const align = this.style.textAlign;
@@ -302,50 +350,5 @@ export default class OutLabel {
 
             y += lh;
         }
-    }
-    
-    // Draw label box
-    drawLabel() {
-        this.ctx.beginPath();
-        drawRoundedRect(
-            this.ctx,
-            Math.round(this.labelRect.x),
-            Math.round(this.labelRect.y),
-            Math.round(this.labelRect.width),
-            Math.round(this.labelRect.height),
-            this.style.borderRadius
-        );
-        this.ctx.closePath();
-
-        if (this.style.backgroundColor) {
-            this.ctx.fillStyle = this.style.backgroundColor || 'black';
-            this.ctx.fill();
-        }
-
-        if (this.style.borderColor && this.style.borderWidth) {
-            this.ctx.strokeStyle = this.style.borderColor;
-            this.ctx.lineWidth = this.style.borderWidth;
-            this.ctx.lineJoin = 'miter';
-            this.ctx.stroke();
-        }
-    }
-    
-    drawLine() {
-        this.ctx.save();
-
-        this.ctx.strokeStyle = this.style.lineColor;
-        this.ctx.lineWidth = this.style.lineWidth;
-        this.ctx.lineJoin = 'miter';
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.center.anchor.x, this.center.anchor.y);
-        this.ctx.lineTo(this.center.copy.x, this.center.copy.y);
-        this.ctx.stroke();
-
-        this.ctx.restore();
-    }
-
-    draw() {
-        this.drawLabel();
-        this.drawText();
     }
 }

@@ -1,10 +1,10 @@
 'use strict';
 
-import { ArcElement, ChartDataset, ChartType, Plugin } from 'chart.js';
+import { ArcElement, Chart, ChartConfiguration, ChartDataset, ChartType, Plugin } from 'chart.js';
 import defaults from './defaults';
 
 import OutLabel from './OutLabel';
-import { merge } from 'chart.js/helpers';
+import { merge, resolve } from 'chart.js/helpers';
 import { OutLabelsContext, OutLabelsOptions } from './types';
 
 declare type OutLabelsPluginType = Plugin<'doughnut' | 'pie', OutLabelsOptions>;
@@ -18,9 +18,11 @@ declare module 'chart.js' {
 
 const LABEL_KEY = defaults.LABEL_KEY;
 
+const symSizeChanged = Symbol("sizeChanged");
+
 function configure(dataset: ChartDataset<'doughnut' | 'pie', number[]>, options?: OutLabelsOptions) {
 	let override = (dataset as any).outlabels;
-	let config = {} as OutLabelsOptions;
+	let config = {};
 
 	if (override === false) {
 		return null;
@@ -29,8 +31,14 @@ function configure(dataset: ChartDataset<'doughnut' | 'pie', number[]>, options?
 		override = {};
 	}
 
-	merge(config, [options, override]);
-    return config;
+	return merge(config, [options, override]) as OutLabelsOptions;
+}
+
+function isPluginApplicableToDataset(
+		chart: Chart<'doughnut' | 'pie', number[], unknown>,
+		dataset?: ChartDataset<'doughnut' | 'pie', number[]>) {
+	const datasetType = dataset?.type || (chart.config as ChartConfiguration)?.type;
+	return ['pie', 'doughnut'].includes(datasetType);
 }
 
 const OutLabelsPlugin: OutLabelsPluginType = {
@@ -39,46 +47,52 @@ const OutLabelsPlugin: OutLabelsPluginType = {
 	defaults: defaults,
 
 	resize: function(chart) {
-		(chart as any).sizeChanged = true;
+		chart[symSizeChanged] = true;
 	},
 
 	afterDatasetUpdate: function(chart, args, options) {
+		if (!isPluginApplicableToDataset(chart, chart.data.datasets[args.index])) {
+			return;
+		}
 		const labels = chart.config.data.labels as string[];
 		const dataset = chart.data.datasets[args.index];
 		const config = configure(dataset, options);
-		const display = config && config.display;
 		const elements = (args.meta.data || []) as ArcElement[];
 		const ctx = chart.ctx;
 
 		ctx.save();
-
+		const dataSum = (args.meta as any).total ||
+			dataset.data.reduce(function(acc, curr) { return acc + curr; }, 0);
 		for (let i = 0; i < elements.length; i++) {
 			const el = elements[i];
 			const label = el[LABEL_KEY] as OutLabel | undefined;
-			const percent = dataset.data[i] / (args.meta as any).total;
 			let newLabel: OutLabel | undefined;
 
-			if (display && el && !(el as any).hidden) {
-				try {
-					let context: OutLabelsContext = {
-						chart: chart,
-						dataIndex: i,
-						dataset: dataset,
-						labels: labels,
-						datasetIndex: args.index,
-						percent: percent
-					};
-					newLabel = new OutLabel(el, i, ctx, config, context);
-				} catch(e) {
-					console.log(e);
-					newLabel = null;
+			if (el && !(el as any).hidden) {
+				const percent = dataSum ? 100 * dataset.data[i] / dataSum : 0;
+				let context: OutLabelsContext = {
+					chart: chart,
+					dataIndex: i,
+					dataset: dataset,
+					labels: labels,
+					datasetIndex: args.index,
+					percent: percent
+				};
+				// Check whether the label should be displayed
+				if (resolve([config && config.display, true], context, i)) {
+					try {
+						newLabel = new OutLabel(el, i, ctx, config, context);
+					} catch(e) {
+						console.log(e);
+						newLabel = null;
+					}
 				}
 			}
 
 			if (
 				label && 
 				newLabel && 
-				!(chart as any).sizeChanged &&
+				!chart[symSizeChanged] &&
 				(label.label === newLabel.label) && 
 				(label.encodedText === newLabel.encodedText)
 			) {
@@ -89,8 +103,9 @@ const OutLabelsPlugin: OutLabelsPluginType = {
 		}
 
 		ctx.restore();
-		(chart as any).sizeChanged = false;
+		chart[symSizeChanged] = false;
 	},
+
 	afterDatasetDraw: function(_, args) {
 		const elements = (args.meta.data || []) as Array<ArcElement>;
 
