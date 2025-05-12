@@ -12,7 +12,7 @@
 
 By default, `https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars/dist/chartjs-plugin-piechart-outlabels-aars.min.js` returns the latest (minified) version, however it's **highly recommended** to always specify a version in order to avoid breaking changes. This can be achieved by appending `@{version}` to the url:
 
-    https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars@1.0.1/dist/chartjs-plugin-piechart-outlabels-aars.min.js    // exact version
+    https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars@1.0.2/dist/chartjs-plugin-piechart-outlabels-aars.min.js    // exact version
     https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars@1/dist/chartjs-plugin-piechart-outlabels-aars.min.js        // latest 1.x.x
 
 Read more about jsDeliver versioning on their [website](http://www.jsdelivr.com/).
