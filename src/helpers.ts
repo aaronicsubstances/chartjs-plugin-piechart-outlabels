@@ -24,7 +24,7 @@ export function textSize(ctx: CanvasRenderingContext2D, lines: RegExpMatchArray,
     };
 }
 
-export function parseFont(value: FontOptions, height: string | number): CanvasFontSpec {
+export function parseFont(value: FontOptions, height: number): CanvasFontSpec {
     const font = helpers.toFont(value);
     if (value.resizable) {
         font.size = adaptTextSizeToHeight(height, value.minSize, value.maxSize);
@@ -33,8 +33,8 @@ export function parseFont(value: FontOptions, height: string | number): CanvasFo
     return font;
 }
 
-function adaptTextSizeToHeight(height: string | number, minSize?: number, maxSize?: number): number {
-    const size = (Number(height) / 100) * 2.5;
+function adaptTextSizeToHeight(height: number, minSize?: number, maxSize?: number): number {
+    const size = (height / 100) * 2.5;
     if (minSize && size < minSize) {
         return minSize;
     }

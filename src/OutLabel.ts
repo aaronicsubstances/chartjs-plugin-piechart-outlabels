@@ -14,9 +14,9 @@ import {
 import { drawRoundedRect, parseFont, textSize } from "./helpers";
 import * as positioners from "./positioners";
 
-const LABEL_KEY = defaults.LABEL_KEY;
-
 export default class OutLabel {
+    static readonly LABEL_KEY: unique symbol = Symbol('$outlabels');
+
     ctx: CanvasRenderingContext2D
     encodedText?: Scriptable<string, OutLabelsContext>
     text: string
@@ -112,20 +112,29 @@ export default class OutLabel {
         }; 
         style.backgroundColor = resolve([config.backgroundColor, defaults.backgroundColor, 'black'], context, index) as any;
         style.borderColor = resolve([config.borderColor, defaults.borderColor, 'black'], context, index) as any;
-        style.borderRadius = resolve([config.borderRadius, 0], context, index) as number;
-        style.borderWidth = resolve([config.borderWidth, 0], context, index) as number;
-        style.lineWidth = resolve([config.lineWidth, 2], context, index) as number;
+        style.borderRadius = Number(resolve([config.borderRadius, 0], context, index));
+        if (!Number.isFinite(style.borderRadius) || style.borderRadius < 0) {
+			throw new Error('Invalid border radius.');
+		}
+        style.borderWidth = Number(resolve([config.borderWidth, 0], context, index));
+        if (!Number.isFinite(style.borderWidth) || style.borderWidth < 0) {
+			throw new Error('Invalid border width.');
+		}
+        style.lineWidth = Number(resolve([config.lineWidth, 2], context, index));
+        if (!Number.isFinite(style.lineWidth) || style.lineWidth < 0) {
+			throw new Error('Invalid line width.');
+		}
         style.lineColor = resolve([config.lineColor, defaults.lineColor, 'black'], context, index) as any;
         style.color = resolve([config.color, 'white'], context, index) as any;
         style.font = parseFont(resolve([config.font, { resizable: true }]) as FontOptions,
-            ctx.canvas.style.height.slice(0, -2));
+            +ctx.canvas.style.height.slice(0, -2));
         style.padding = toPadding(resolve([config.padding, 0], context, index) as number | TRBL);
         style.textAlign = resolve([config.textAlign, 'left'], context, index) as CanvasTextAlign;
         this.style = style;
 
-        this.stickLength = resolve([config.stickLength, 40], context, index) as number;
-		if (this.stickLength < 0) {
-			throw new Error('Negative stick length.');
+        this.stickLength = Number(resolve([config.stickLength, 40], context, index));
+		if (!Number.isFinite(this.stickLength) || this.stickLength < 0) {
+			throw new Error('Invalid stick length.');
 		}
 
         this.size = textSize(ctx, this.lines, this.style.font);
@@ -238,7 +247,7 @@ export default class OutLabel {
             valid = !positioners.doesRectIntersectCircle(arc, this.labelRect);
 
             for (let e = 0; valid && e < max; e++) {
-                const element = elements[e][LABEL_KEY] as OutLabel | undefined;
+                const element = elements[e][OutLabel.LABEL_KEY] as OutLabel | undefined;
                 if (!element) {
                     continue;
                 }

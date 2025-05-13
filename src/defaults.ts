@@ -6,9 +6,7 @@
 
 import { OutLabelsContext, OutLabelsOptions } from "./types";
 
-const defaults: OutLabelsOptions & { "LABEL_KEY": string } = {
-
-	LABEL_KEY: '$outlabels',
+const defaults: OutLabelsOptions = {
 
 	/**
 	 * The color used to draw the background of the label rect.

@@ -1,6 +1,13 @@
 'use strict';
 
-import { ArcElement, Chart, ChartConfiguration, ChartDataset, ChartType, Plugin } from 'chart.js';
+import {
+	ArcElement,
+	Chart,
+	ChartConfiguration,
+	ChartDataset,
+	ChartType,
+	Plugin
+} from 'chart.js';
 import defaults from './defaults';
 
 import OutLabel from './OutLabel';
@@ -16,7 +23,7 @@ declare module 'chart.js' {
     }
 }
 
-const LABEL_KEY = defaults.LABEL_KEY;
+const LABEL_KEY = OutLabel.LABEL_KEY;
 
 const symSizeChanged = Symbol("sizeChanged");
 
