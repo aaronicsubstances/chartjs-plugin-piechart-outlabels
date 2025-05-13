@@ -61,15 +61,14 @@ const OutLabelsPlugin: OutLabelsPluginType = {
 		const ctx = chart.ctx;
 
 		ctx.save();
-		const dataSum = (args.meta as any).total ||
-			dataset.data.reduce(function(acc, curr) { return acc + curr; }, 0);
+		const dataSum = dataset.data.reduce(function(acc, curr) { return acc + curr; }, 0);
 		const elementsVisible = chart.isDatasetVisible(args.index);
 		for (let i = 0; i < elements.length; i++) {
 			const el = elements[i];
 			const label = el[LABEL_KEY] as OutLabel | undefined;
 			let newLabel: OutLabel | undefined;
 
-			if (elementsVisible && chart.getDataVisibility(i)) {
+			if (dataSum && elementsVisible && chart.getDataVisibility(i)) {
 				const percent = dataSum ? 100 * dataset.data[i] / dataSum : 0;
 				let context: OutLabelsContext = {
 					chart: chart,
