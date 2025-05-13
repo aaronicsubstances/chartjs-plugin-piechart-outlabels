@@ -10,7 +10,7 @@ Include Chart.js library and chartjs-plugin-piechart-outlabels-aars plugin to HT
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script 
-		src="hhttps://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"
+		src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"
 	></script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars@1.0.3/dist/chartjs-plugin-piechart-outlabels-aars.umd.min.js"
