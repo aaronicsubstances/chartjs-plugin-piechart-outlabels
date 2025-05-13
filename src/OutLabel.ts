@@ -1,4 +1,4 @@
-import { ArcElement, CanvasFontSpec, ChartArea, Point, Scriptable, TRBL } from "chart.js";
+import { ArcElement, CanvasFontSpec, Chart, ChartArea, Point, Scriptable, TRBL } from "chart.js";
 import { resolve, toPadding } from "chart.js/helpers";
 
 import defaults from "./defaults";
@@ -231,7 +231,8 @@ export default class OutLabel {
             point.y <= this.labelRect.y + this.labelRect.height + offset;
     }
 
-    update(arc: ArcElement, elements: ArcElement[], max: number) {
+    update(chart: Chart<'doughnut' | 'pie', number[], unknown>,
+            arc: ArcElement, datasetIndex: number, dataIndex: number) {
         this.center = positioners.center(arc, this.stickLength);
 
         this.center.x += this.offset.x;
@@ -246,23 +247,27 @@ export default class OutLabel {
 
             valid = !positioners.doesRectIntersectCircle(arc, this.labelRect);
 
-            for (let e = 0; valid && e < max; e++) {
-                const element = elements[e][OutLabel.LABEL_KEY] as OutLabel | undefined;
-                if (!element) {
-                    continue;
-                }
-
-                const elPoints = element.getPoints();
-
-                for (let p = 0; p < rectPoints.length; p++) {
-                    if (element.containsPoint(rectPoints[p])) {
-                        valid = false;
-                        break;
+            for (let d = 0; valid && d <= datasetIndex; d++) {
+                const elements = chart.getDatasetMeta(d).data;
+                const max = d < datasetIndex ? elements.length : dataIndex;
+                for (let e = 0; valid && e < max; e++) {
+                    const element = elements[e][OutLabel.LABEL_KEY] as OutLabel | undefined;
+                    if (!element) {
+                        continue;
                     }
 
-                    if (this.containsPoint(elPoints[p])) {
-                        valid = false;
-                        break;
+                    const elPoints = element.getPoints();
+
+                    for (let p = 0; p < rectPoints.length; p++) {
+                        if (element.containsPoint(rectPoints[p])) {
+                            valid = false;
+                            break;
+                        }
+
+                        if (this.containsPoint(elPoints[p])) {
+                            valid = false;
+                            break;
+                        }
                     }
                 }
             }
