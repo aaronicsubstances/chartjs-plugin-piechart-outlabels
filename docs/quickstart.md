@@ -13,7 +13,7 @@ Include Chart.js library and chartjs-plugin-piechart-outlabels-aars plugin to HT
 		src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"
 	></script>
 	<script
-		src="https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars@1.0.5/dist/chartjs-plugin-piechart-outlabels-aars.umd.min.js"
+		src="https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars@1.0.6/dist/chartjs-plugin-piechart-outlabels-aars.umd.min.js"
 	></script>
 
 	<title>Pie Chart Outlabels</title>
@@ -95,7 +95,7 @@ Initialize chart.
 			src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"
 		></script>
 		<script
-			src="https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars@1.0.5/dist/chartjs-plugin-piechart-outlabels-aars.umd.min.js"
+			src="https://cdn.jsdelivr.net/npm/chartjs-plugin-piechart-outlabels-aars@1.0.6/dist/chartjs-plugin-piechart-outlabels-aars.umd.min.js"
 		></script>
 
 		<title>Pie Chart Outlabels</title>

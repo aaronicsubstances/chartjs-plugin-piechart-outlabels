@@ -3,7 +3,7 @@
 import { ArcElement, Point } from "chart.js";
 import { Center, Rect } from "./types";
 
-export function	center(arc: ArcElement, stretch: number): Center {
+export function	center(arc: ArcElement, largestCircleRadius: number, stretch: number): Center {
     const { x, y, startAngle, endAngle, outerRadius: d } = arc.getProps([
         "x",
         "y",
@@ -15,7 +15,7 @@ export function	center(arc: ArcElement, stretch: number): Center {
     const cosA = Math.cos(angle);
     const sinA = Math.sin(angle);
 
-    const stretchedD = d + stretch;
+    const stretchedD = stretch + largestCircleRadius;
     return {
         x: x + cosA * stretchedD,
         y: y + sinA * stretchedD,
@@ -60,12 +60,7 @@ export function moveFromAnchor(center: Center, dist: number): Center {
     };
 }
 
-export function doesRectIntersectCircle(arc: ArcElement, r: Rect) {
-    const { x: circleCenterX, y: circleCenterY, outerRadius: circleRadius } = arc.getProps([
-        "x",
-        "y",
-        "outerRadius"
-    ], true);
+export function doesRectIntersectCircle(circleCenter: Point, circleRadius: number, r: Rect) {
     const l1: Point = {
         x: r.x,
         y: r.y
@@ -78,12 +73,12 @@ export function doesRectIntersectCircle(arc: ArcElement, r: Rect) {
     // first check for intersection with square for which
     // circle will be an inscribed circle.
     const l2: Point = {
-        x: circleCenterX - circleRadius,
-        y: circleCenterY - circleRadius
+        x: circleCenter.x- circleRadius,
+        y: circleCenter.y - circleRadius
     };
     const r2: Point = {
-        x: circleCenterX + circleRadius,
-        y: circleCenterY + circleRadius
+        x: circleCenter.x + circleRadius,
+        y: circleCenter.y + circleRadius
     };
 
     if (!doRectanglesIntersect(l1, r1, l2, r2)) {
@@ -94,12 +89,12 @@ export function doesRectIntersectCircle(arc: ArcElement, r: Rect) {
     // circle will be a circumscribed circle.
     const halfOfSmallerSquareSide = circleRadius / Math.SQRT2;
     const l3: Point = {
-        x: circleCenterX - halfOfSmallerSquareSide,
-        y: circleCenterY - halfOfSmallerSquareSide
+        x: circleCenter.x - halfOfSmallerSquareSide,
+        y: circleCenter.y - halfOfSmallerSquareSide
     };
     const r3: Point = {
-        x: circleCenterX + halfOfSmallerSquareSide,
-        y: circleCenterY + halfOfSmallerSquareSide
+        x: circleCenter.x + halfOfSmallerSquareSide,
+        y: circleCenter.y + halfOfSmallerSquareSide
     };
 
     if (doRectanglesIntersect(l1, r1, l3, r3)) {
@@ -108,11 +103,6 @@ export function doesRectIntersectCircle(arc: ArcElement, r: Rect) {
 
     // lastly check for any two sides of rectangle
     // which do not intersect circle.
-
-    const circleCenter = {
-        x: circleCenterX,
-        y: circleCenterY
-    };
 
     // use the horizontal sides.
     let ptsOfIntercept1 = calcIntersectionOfHorizontalLineWithCircle(r.y, circleCenter, circleRadius);
@@ -135,7 +125,7 @@ function doRectanglesIntersect(topLeft1: Point, bottomRight1: Point,
 }
 
 function calcIntersectionOfHorizontalLineWithCircle(yIntercept: number,
-        circleCenter: { x: number, y: number }, circleRadius: number) {
+        circleCenter: Point, circleRadius: number) {
     let determinant = circleRadius*circleRadius -  yIntercept*yIntercept;
     determinant += 2 * yIntercept * circleCenter.y - circleCenter.y * circleCenter.y;
     if (determinant < 0) {
@@ -146,7 +136,7 @@ function calcIntersectionOfHorizontalLineWithCircle(yIntercept: number,
 }
 
 /*function calcIntersectionOfVerticalLineWithCircle(xIntercept: number,
-        circleCenter: { x: number, y: number }, circleRadius: number) {
+        circleCenter: Point, circleRadius: number) {
     let determinant = circleRadius*circleRadius -  xIntercept*xIntercept;
     determinant += 2 * xIntercept * circleCenter.x - circleCenter.x * circleCenter.x;
     if (determinant < 0) {

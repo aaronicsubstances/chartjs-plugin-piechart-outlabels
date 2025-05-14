@@ -48,6 +48,27 @@ function isPluginApplicableToDataset(
 	return ['pie', 'doughnut'].includes(datasetType);
 }
 
+function computeLargestCircleProps(chart: Chart<'doughnut' | 'pie', number[], unknown>) {
+	// given how the data sets are arranged from largest to smallest,
+	// simply return the first value
+	for (let i = 0; i < chart.data.datasets.length; i++) {
+		if (!chart.isDatasetVisible(i)) {
+			continue;
+		}
+		const elements = chart.getDatasetMeta(i).data;
+		for (let j = 0; j < elements.length; j++) {
+			const el = elements[j];
+			const label = el[LABEL_KEY] as OutLabel | undefined;
+			if (!label) {
+				continue;
+			}
+
+			return el.getProps(["x", "y", "outerRadius"], true)
+		}
+	}
+	return null;
+}
+
 const OutLabelsPlugin: OutLabelsPluginType = {
 	id: 'outlabels',
 
@@ -72,16 +93,16 @@ const OutLabelsPlugin: OutLabelsPluginType = {
 		// The code in the loops below deals with visibility of annular sectors in three aspects
 		// 1. visibility of all annular sectors in a dataset. Determined by chart.isDatasetVisible(args.index),
 		//    and can be changed with chart.show(args.index) and chart.hide(args.index)
-		//   This is handled by the Chart.js library itself, in which invisible datasets are not shown at all,
-		//   and so do not need to be explicitly handled by plugins.
 		// 2. visibility of all annular sectors across multiple datasets which have the same index i. Determined by
 		//    chart.getDataVisibility(i), and can be changed with chart.toggleDataVisibility(i) followed by chart.update()
-		// 3. visibility of a particular annular sector at index i in a particular dataset. Determined by
+		// 3. (Chart.js 4) visibility of a particular annular sector at index i in a particular dataset. Determined by
 		//    chart.getDatasetMeta(args.index).data[i].hidden, which is equivalent in this plugin hook
 		//    to args.meta.data[i].hidden,
 		//    and can be changed with chart.show(args.index, i) and chart.hide(args.index, i)
 		//
 		// So this plugin checks that each annular sector is visible in all 3 aspects, before labelling it.
+
+		const elementsVisible = chart.isDatasetVisible(args.index);
 
 		let dataSum = 0;
 		for (let i = 0; i < dataset.data.length; i++) {
@@ -94,7 +115,7 @@ const OutLabelsPlugin: OutLabelsPluginType = {
 			const label = el[LABEL_KEY] as OutLabel | undefined;
 			let newLabel: OutLabel | undefined;
 
-			if (dataSum && chart.getDataVisibility(i) && !(el as any).hidden) {
+			if (dataSum && elementsVisible && chart.getDataVisibility(i) && !(el as any).hidden) {
 				const percent = dataSum ? 100 * dataset.data[i] / dataSum : 0;
 				let context: OutLabelsContext = {
 					chart: chart,
@@ -132,22 +153,33 @@ const OutLabelsPlugin: OutLabelsPluginType = {
 		chart[symSizeChanged] = false;
 	},
 
-	afterDatasetDraw: function(chart, args) {
-		const elements = (args.meta.data || []) as Array<ArcElement>;
+	afterDraw: function (chart) {
+		const largestCircleProps = computeLargestCircleProps(chart);
+		for (let i = 0; i < chart.data.datasets.length; i++) {
+			const elements = chart.getDatasetMeta(i).data as ArcElement[];
+			for (let j = 0; j < elements.length; j++) {
+				const el = elements[j];
+				const label = el[LABEL_KEY] as OutLabel | undefined;
+				if (!label) {
+					continue;
+				}
 
-		for (let i = 0; i < 2 * elements.length; ++i) {
-			const index = i < elements.length ? i : i - elements.length;
-
-			const el = elements[index];
-			const label = el[LABEL_KEY] as OutLabel | undefined;
-			if (!label) {
-				continue;
-			}
-
-			if (i < elements.length) {
-				label.update(chart, el, args.index, index);
+				label.update(chart, el, i, j, {
+					x: largestCircleProps.x,
+					y: largestCircleProps.y
+				}, largestCircleProps.outerRadius);
 				label.drawLine();
-			} else {
+			}
+		}
+		for (let i = 0; i < chart.data.datasets.length; i++) {
+			const elements = chart.getDatasetMeta(i).data;
+			for (let j = 0; j < elements.length; j++) {
+				const el = elements[j];
+				const label = el[LABEL_KEY] as OutLabel | undefined;
+				if (!label) {
+					continue;
+				}
+
 				label.draw();
 			}
 		}

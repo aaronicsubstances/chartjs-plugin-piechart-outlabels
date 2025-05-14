@@ -232,8 +232,9 @@ export default class OutLabel {
     }
 
     update(chart: Chart<'doughnut' | 'pie', number[], unknown>,
-            arc: ArcElement, datasetIndex: number, dataIndex: number) {
-        this.center = positioners.center(arc, this.stickLength);
+            arc: ArcElement, datasetIndex: number, dataIndex: number,
+            circleCenter: Point, largestCircleRadius: number) {
+        this.center = positioners.center(arc, largestCircleRadius, this.stickLength);
 
         this.center.x += this.offset.x;
         this.center.y += this.offset.y;
@@ -245,7 +246,8 @@ export default class OutLabel {
             this.labelRect = this.computeLabelRect();
             const rectPoints = this.getPoints();
 
-            valid = !positioners.doesRectIntersectCircle(arc, this.labelRect);
+            valid = !positioners.doesRectIntersectCircle(circleCenter, largestCircleRadius,
+                this.labelRect);
 
             for (let d = 0; valid && d <= datasetIndex; d++) {
                 const elements = chart.getDatasetMeta(d).data;
